@@ -1,6 +1,8 @@
 let timeLeft;
 let timerId = null;
 let isWorkTime = true;
+let wakeLock = null;
+let timerStartTime = null;
 
 const minutesDisplay = document.getElementById('minutes');
 const secondsDisplay = document.getElementById('seconds');
@@ -18,6 +20,8 @@ const modal = document.getElementById('focus-modal');
 const focusInput = document.getElementById('focus-input');
 const focusOkButton = document.getElementById('focus-ok');
 const focusCancelButton = document.getElementById('focus-cancel');
+
+const timerSound = document.getElementById('timer-complete');
 
 function updateDisplay() {
     const minutes = Math.floor(timeLeft / 60);
@@ -73,6 +77,14 @@ function showFocusModal() {
     });
 }
 
+async function requestWakeLock() {
+    try {
+        wakeLock = await navigator.wakeLock.request('screen');
+    } catch (err) {
+        console.log(`${err.name}, ${err.message}`);
+    }
+}
+
 async function startTimer() {
     if (timerId !== null) return;
     
@@ -86,17 +98,43 @@ async function startTimer() {
         timeLeft = WORK_TIME;
     }
     
+    // Request wake lock when timer starts
+    await requestWakeLock();
+    
+    // Store the start time
+    timerStartTime = Date.now() - ((WORK_TIME - timeLeft) * 1000);
+    
     timerId = setInterval(() => {
-        timeLeft--;
-        updateDisplay();
+        const elapsedSeconds = Math.floor((Date.now() - timerStartTime) / 1000);
+        timeLeft = WORK_TIME - elapsedSeconds;
         
-        if (timeLeft === 0) {
+        if (timeLeft <= 0) {
             clearInterval(timerId);
             timerId = null;
             addTimeButton.disabled = true;
-            focusTextDisplay.textContent = ''; // Clear focus text
+            focusTextDisplay.textContent = '';
+            if (wakeLock) wakeLock.release();
+            wakeLock = null;
+            
+            // Play sound and show notification
+            timerSound.play().catch(err => console.log('Audio playback failed:', err));
+            
+            // Try to show a notification if supported
+            if ('Notification' in window) {
+                Notification.requestPermission().then(permission => {
+                    if (permission === 'granted') {
+                        new Notification('Timer Complete!', {
+                            body: isWorkTime ? 'Break time is over! Time to work!' : 'Work time is over! Take a break!',
+                            icon: '/favicon.ico'
+                        });
+                    }
+                });
+            }
+            
             switchMode();
             alert(isWorkTime ? 'Break time is over! Time to work!' : 'Work time is over! Take a break!');
+        } else {
+            updateDisplay();
         }
     }, 1000);
     
@@ -132,6 +170,10 @@ startButton.addEventListener('click', () => {
         timerId = null;
         startButton.textContent = 'Start';
         addTimeButton.disabled = true;
+        if (wakeLock) {
+            wakeLock.release();
+            wakeLock = null;
+        }
     }
 });
 
@@ -156,6 +198,16 @@ updateDisplay();
 
 // Initialize the button state
 addTimeButton.disabled = true;
+
+// Add visibility change handler
+document.addEventListener('visibilitychange', () => {
+    if (document.visibilityState === 'visible' && timerId !== null) {
+        // Recalculate time left based on actual elapsed time
+        const elapsedSeconds = Math.floor((Date.now() - timerStartTime) / 1000);
+        timeLeft = WORK_TIME - elapsedSeconds;
+        updateDisplay();
+    }
+});
 
 function getTimeBasedColors() {
     const hour = new Date().getHours();
