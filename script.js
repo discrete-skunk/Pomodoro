@@ -9,9 +9,15 @@ const resetButton = document.getElementById('reset');
 const modeText = document.getElementById('mode-text');
 const toggleButton = document.getElementById('toggle-mode');
 const addTimeButton = document.getElementById('add-time');
+const focusTextDisplay = document.getElementById('focus-text');
 
 const WORK_TIME = 25 * 60; // 25 minutes in seconds
 const BREAK_TIME = 5 * 60; // 5 minutes in seconds
+
+const modal = document.getElementById('focus-modal');
+const focusInput = document.getElementById('focus-input');
+const focusOkButton = document.getElementById('focus-ok');
+const focusCancelButton = document.getElementById('focus-cancel');
 
 function updateDisplay() {
     const minutes = Math.floor(timeLeft / 60);
@@ -36,8 +42,45 @@ function switchMode() {
     updateDisplay();
 }
 
-function startTimer() {
+function showFocusModal() {
+    return new Promise((resolve) => {
+        modal.style.display = 'block';
+        focusInput.value = '';
+        
+        const closeButton = document.querySelector('.modal-close');
+        closeButton.onclick = () => {
+            modal.style.display = 'none';
+            resolve(null);
+        };
+        
+        focusOkButton.onclick = () => {
+            const value = focusInput.value.trim();
+            if (value) {
+                modal.style.display = 'none';
+                resolve(value);
+            }
+        };
+        
+        focusCancelButton.onclick = () => {
+            modal.style.display = 'none';
+            resolve(null);
+        };
+        
+        focusInput.onkeyup = (e) => {
+            if (e.key === 'Enter') focusOkButton.click();
+            if (e.key === 'Escape') focusCancelButton.click();
+        };
+    });
+}
+
+async function startTimer() {
     if (timerId !== null) return;
+    
+    if (isWorkTime) {
+        const focusTask = await showFocusModal();
+        if (!focusTask) return;
+        focusTextDisplay.textContent = `Focus: ${focusTask}`;
+    }
     
     if (!timeLeft) {
         timeLeft = WORK_TIME;
@@ -50,12 +93,15 @@ function startTimer() {
         if (timeLeft === 0) {
             clearInterval(timerId);
             timerId = null;
+            addTimeButton.disabled = true;
+            focusTextDisplay.textContent = ''; // Clear focus text
             switchMode();
             alert(isWorkTime ? 'Break time is over! Time to work!' : 'Work time is over! Take a break!');
         }
     }, 1000);
     
     startButton.textContent = 'Pause';
+    addTimeButton.disabled = false;
 }
 
 function resetTimer() {
@@ -65,6 +111,8 @@ function resetTimer() {
     timeLeft = WORK_TIME;
     modeText.textContent = 'Work Time';
     startButton.textContent = 'Start';
+    addTimeButton.disabled = true;
+    focusTextDisplay.textContent = ''; // Clear focus text
     document.title = 'Pomodoro Timer';
     updateDisplay();
 }
@@ -83,6 +131,7 @@ startButton.addEventListener('click', () => {
         clearInterval(timerId);
         timerId = null;
         startButton.textContent = 'Start';
+        addTimeButton.disabled = true;
     }
 });
 
@@ -93,6 +142,7 @@ toggleButton.addEventListener('click', () => {
         clearInterval(timerId);
         timerId = null;
         startButton.textContent = 'Start';
+        addTimeButton.disabled = true;
     }
     switchMode();
 });
@@ -102,4 +152,7 @@ addTimeButton.addEventListener('click', addFiveMinutes);
 // Initialize the display
 timeLeft = WORK_TIME;
 toggleButton.textContent = '\u2600';
-updateDisplay(); 
+updateDisplay();
+
+// Initialize the button state
+addTimeButton.disabled = true; 

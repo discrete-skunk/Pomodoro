@@ -10,6 +10,7 @@
     <div class="container">
         <button id="toggle-mode" class="mode-toggle">\u2600</button>
         <h1>Pomodoro Timer</h1>
+        <div id="focus-text" class="focus-text"></div>
         <div class="timer">
             <span id="minutes">25</span>:<span id="seconds">00</span>
         </div>
@@ -20,6 +21,22 @@
         </div>
         <div class="mode">
             <span id="mode-text">Work Time</span>
+        </div>
+    </div>
+    <div id="focus-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-title-bar">
+                <span class="modal-title">Set Focus Task</span>
+                <button class="modal-close">✕</button>
+            </div>
+            <div class="modal-body">
+                <label for="focus-input">What are you focusing on?</label>
+                <input type="text" id="focus-input" class="focus-input">
+                <div class="modal-buttons">
+                    <button id="focus-ok">OK</button>
+                    <button id="focus-cancel">Cancel</button>
+                </div>
+            </div>
         </div>
     </div>
     <script src="script.js"></script>

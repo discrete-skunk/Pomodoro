@@ -80,6 +80,14 @@ h1 {
     background-color: #c0c0c0;
 }
 
+.controls button:disabled {
+    color: #808080;
+    cursor: not-allowed;
+    background-color: #d3d3d3;
+    border-color: #c0c0c0;
+    box-shadow: none;
+}
+
 .mode {
     margin-top: 15px;
     font-size: 16px;
@@ -128,4 +136,95 @@ h1 {
     .controls button {
         margin: 5px 0;
     }
+}
+
+.focus-text {
+    font-family: 'MS Sans Serif', Arial, sans-serif;
+    font-size: 16px;
+    margin: 10px 0;
+    padding: 5px;
+    color: #000;
+    min-height: 20px;
+    font-weight: bold;
+}
+
+.modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+}
+
+.modal-content {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: #c0c0c0;
+    border: 2px solid;
+    border-color: #ffffff #808080 #808080 #ffffff;
+    box-shadow: inset -1px -1px #0a0a0a, inset 1px 1px #dfdfdf;
+    width: 300px;
+}
+
+.modal-title-bar {
+    background-color: #000080;
+    color: white;
+    padding: 3px 5px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.modal-close {
+    background: #c0c0c0;
+    border: 1px solid #ffffff;
+    color: #000;
+    width: 16px;
+    height: 16px;
+    font-size: 12px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.modal-body {
+    padding: 15px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+}
+
+.focus-input {
+    width: calc(100% - 30px);  /* Account for padding */
+    margin: 10px 0;
+    padding: 5px;
+    border: 2px solid;
+    border-color: #808080 #ffffff #ffffff #808080;
+    background: white;
+    font-family: 'MS Sans Serif', Arial, sans-serif;
+}
+
+.modal-buttons {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    gap: 5px;
+    margin-top: 15px;
+}
+
+.modal-buttons button {
+    font-family: 'MS Sans Serif', Arial, sans-serif;
+    padding: 5px 20px;
+    cursor: pointer;
+    background-color: #c0c0c0;
+    border: 2px solid;
+    border-color: #ffffff #808080 #808080 #ffffff;
+    box-shadow: inset -1px -1px #0a0a0a, inset 1px 1px #dfdfdf;
 } 
