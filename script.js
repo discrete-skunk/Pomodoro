@@ -30,7 +30,8 @@ function switchMode() {
     isWorkTime = !isWorkTime;
     timeLeft = isWorkTime ? WORK_TIME : BREAK_TIME;
     modeText.textContent = isWorkTime ? 'Work Time' : 'Break Time';
-    toggleButton.textContent = isWorkTime ? 'Rest' : 'Work';
+    toggleButton.textContent = isWorkTime ? '☀️' : '🌙';
+    document.title = `Pomodoro Timer - ${isWorkTime ? 'Work' : 'Break'}`;
     updateDisplay();
 }
 
@@ -90,5 +91,5 @@ toggleButton.addEventListener('click', () => {
 
 // Initialize the display
 timeLeft = WORK_TIME;
-toggleButton.textContent = 'Rest';
+toggleButton.textContent = '☀️';
 updateDisplay(); 
