@@ -8,6 +8,7 @@ const startButton = document.getElementById('start');
 const resetButton = document.getElementById('reset');
 const modeText = document.getElementById('mode-text');
 const toggleButton = document.getElementById('toggle-mode');
+const addTimeButton = document.getElementById('add-time');
 
 const WORK_TIME = 25 * 60; // 25 minutes in seconds
 const BREAK_TIME = 5 * 60; // 5 minutes in seconds
@@ -68,6 +69,13 @@ function resetTimer() {
     updateDisplay();
 }
 
+function addFiveMinutes() {
+    if (timerId !== null) {  // Only allow adding time when timer is running
+        timeLeft += 5 * 60;  // Add 5 minutes in seconds
+        updateDisplay();
+    }
+}
+
 startButton.addEventListener('click', () => {
     if (timerId === null) {
         startTimer();
@@ -88,6 +96,8 @@ toggleButton.addEventListener('click', () => {
     }
     switchMode();
 });
+
+addTimeButton.addEventListener('click', addFiveMinutes);
 
 // Initialize the display
 timeLeft = WORK_TIME;
