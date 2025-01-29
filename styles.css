@@ -10,9 +10,8 @@ body {
     align-items: center;
     min-height: 100vh;
     margin: 0;
-    background-color: #008080; /* Classic Windows 95 teal */
     color: #000;
-    background-image: repeating-linear-gradient(45deg, #008080 0px, #009090 2px, #008080 4px);
+    transition: background 1s;
 }
 
 .container {

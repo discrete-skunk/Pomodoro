@@ -155,4 +155,67 @@ toggleButton.textContent = '\u2600';
 updateDisplay();
 
 // Initialize the button state
-addTimeButton.disabled = true; 
+addTimeButton.disabled = true;
+
+function getTimeBasedColors() {
+    const hour = new Date().getHours();
+    
+    // Early morning (5-8)
+    if (hour >= 5 && hour < 8) {
+        return {
+            primary: '#FF7F50',    // Coral sunrise
+            secondary: '#FFA07A',   // Light salmon
+            darker: '#E55B3C'       // Darker coral
+        };
+    }
+    // Morning (8-12)
+    else if (hour >= 8 && hour < 12) {
+        return {
+            primary: '#008080',     // Original teal
+            secondary: '#009090',    // Slightly lighter teal
+            darker: '#006666'       // Darker teal
+        };
+    }
+    // Afternoon (12-16)
+    else if (hour >= 12 && hour < 16) {
+        return {
+            primary: '#20B2AA',     // Light sea green
+            secondary: '#48D1CC',    // Medium turquoise
+            darker: '#1A8F89'       // Darker sea green
+        };
+    }
+    // Late afternoon (16-19)
+    else if (hour >= 16 && hour < 19) {
+        return {
+            primary: '#CD853F',     // Peru (warm sunset)
+            secondary: '#DEB887',    // Burlywood
+            darker: '#A66A32'       // Darker peru
+        };
+    }
+    // Evening (19-22)
+    else if (hour >= 19 && hour < 22) {
+        return {
+            primary: '#4682B4',     // Steel blue
+            secondary: '#5F9EA0',    // Cadet blue
+            darker: '#385E8D'       // Darker steel blue
+        };
+    }
+    // Night (22-5)
+    else {
+        return {
+            primary: '#2F4F4F',     // Dark slate gray
+            secondary: '#3D5C5C',    // Slightly lighter slate
+            darker: '#243C3C'       // Darker slate
+        };
+    }
+}
+
+function updateBackgroundColors() {
+    const colors = getTimeBasedColors();
+    document.body.style.background = 
+        `linear-gradient(to bottom, ${colors.primary} 0%, ${colors.darker} 100%)`;
+}
+
+// Update colors immediately and then every minute
+updateBackgroundColors();
+setInterval(updateBackgroundColors, 60000); 
