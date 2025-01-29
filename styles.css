@@ -121,10 +121,14 @@ h1 {
 @media (max-width: 480px) {
     .container {
         padding: 15px;
+        width: 90%;
+        max-width: 350px;
+        margin: 0 auto;
     }
     
     .timer {
         font-size: 48px;
+        padding: 5px;
     }
     
     .controls {
@@ -134,6 +138,12 @@ h1 {
     
     .controls button {
         margin: 5px 0;
+    }
+
+    body {
+        min-height: 100dvh; /* Use dynamic viewport height for mobile */
+        padding: 10px;
+        box-sizing: border-box;
     }
 }
 
